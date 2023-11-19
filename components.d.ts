@@ -7,8 +7,14 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    PageCmp: typeof import('./src/components/PageCmp.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    VanButton: (typeof import('vant/es'))['Button']
+    VanButton: typeof import('vant/es')['Button']
+    VanNavBar: typeof import('vant/es')['NavBar']
+    VanTabbar: typeof import('vant/es')['Tabbar']
+    VanTabbarItem: typeof import('vant/es')['TabbarItem']
+    Video: typeof import('./src/components/Video.vue')['default']
+    VideoCmp: typeof import('./src/components/VideoCmp.vue')['default']
   }
 }

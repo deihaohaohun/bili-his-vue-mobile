@@ -5,7 +5,7 @@ import { showToast } from 'vant'
 
 // 1. 新axios实例，基础配置
 const instance = axios.create({
-  baseURL: 'https://consult-api.itheima.net/',
+  baseURL: 'http://192.168.18.16:3000',
   timeout: 10000
 })
 
@@ -24,8 +24,8 @@ instance.interceptors.request.use(
 // 3. 响应拦截器，剥离无效数据，401拦截
 instance.interceptors.response.use(
   (res) => {
-    // 后台约定，响应成功，但是code不是10000，是业务逻辑失败
-    if (res.data?.code !== 10000) {
+    // 后台约定, 响应成功，但是 code 不是 200, 是业务逻辑失败
+    if (res.data?.code !== 200) {
       showToast(res.data?.message || '业务失败')
       return Promise.reject(res.data)
     }
@@ -57,4 +57,8 @@ const tGet = <T>(url: string) => {
   return instance.get<T, Data<T>>(url)
 }
 
-export { instance, tGet }
+const tPut = <T>(url: string, data: any) => {
+  return instance.put<T, Data<T>>(url, data)
+}
+
+export { instance, tGet, tPut }
