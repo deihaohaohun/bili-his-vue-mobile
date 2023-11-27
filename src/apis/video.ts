@@ -1,9 +1,12 @@
+import type { R } from '@/types/r'
 import { tGet, tPut } from '../utils/request'
+import type { ResPage } from '@/types/r-page'
+import type { Video } from '@/types/video'
 
-export function getVideos<T>(type: 'Doing' | 'Todo' | 'Done' = 'Doing') {
-  return tGet<T>(`/video/${type}`)
+export function getVideos(type: 'Doing' | 'Todo' | 'Done', page: number, size: number) {
+  return tGet<Video, R<ResPage<Video>>>(`/video/${type}/${page}/${size}`)
 }
 
-export function addVideoHistory<T>(id: string, data: any) {
-  return tPut<T>(`/video/${id}`, data)
+export function addVideoHistory(id: string, data: any) {
+  return tPut<Video>(`/video/${id}`, data)
 }

@@ -4,13 +4,13 @@ import axios from 'axios'
 import { showToast } from 'vant'
 
 // 1. 新axios实例，基础配置
-const instance = axios.create({
+const req = axios.create({
   baseURL: 'http://192.168.18.16:3000',
   timeout: 10000
 })
 
 // 2. 请求拦截器，携带token
-instance.interceptors.request.use(
+req.interceptors.request.use(
   (config) => {
     const store = useUserStore()
     if (store.user?.token && config.headers) {
@@ -22,7 +22,7 @@ instance.interceptors.request.use(
 )
 
 // 3. 响应拦截器，剥离无效数据，401拦截
-instance.interceptors.response.use(
+req.interceptors.response.use(
   (res) => {
     // 后台约定, 响应成功，但是 code 不是 200, 是业务逻辑失败
     if (res.data?.code !== 200) {
@@ -47,18 +47,7 @@ instance.interceptors.response.use(
   }
 )
 
-type Data<T> = {
-  code: number
-  message: string
-  data: T
-}
+const tGet = req.get
+const tPut = req.put
 
-const tGet = <T>(url: string) => {
-  return instance.get<T, Data<T>>(url)
-}
-
-const tPut = <T>(url: string, data: any) => {
-  return instance.put<T, Data<T>>(url, data)
-}
-
-export { instance, tGet, tPut }
+export { tGet, tPut }
