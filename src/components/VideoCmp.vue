@@ -5,7 +5,7 @@ import { showToast, showConfirmDialog } from 'vant';
 
 const { video } = defineProps<{ video: Video }>()
 const emit = defineEmits<{
-  changeCover: [id: string]
+  changeCover: [video: Video]
 }>()
 
 const addHistory = async () => {
@@ -19,7 +19,7 @@ const addHistory = async () => {
 }
 
 function changeCover() {
-  emit('changeCover', video.id)
+  emit('changeCover', video)
 }
 </script>
 

@@ -5,13 +5,14 @@ import VideoCmp from '@/components/VideoCmp.vue';
 import { onMounted, ref } from 'vue';
 import BScroll from '@better-scroll/core'
 import { usePage } from '@/utils/page';
-import Pullup from '@better-scroll/pull-up'
 import type { Video, VideoStatus } from '@/types/video';
 import { throttle } from 'lodash-es'
 import { showToast, type UploaderInstance } from 'vant';
 import Fuse from 'fuse.js'
+import type { ActionSheetAction, UploaderFileListItem } from 'vant';
+import { readImgFromClipboard } from '@/utils/img';
 
-BScroll.use(Pullup)
+
 const type = ref<VideoStatus>('Doing')
 function changeType(clickedType: VideoStatus) {
   type.value = clickedType
@@ -26,6 +27,7 @@ const { p, reset } = usePage()
 let scroll: BScroll
 
 const loadVideo = throttle(() => {
+  console.log('first')
   if (p.noMore) return
   let { page, size } = p
   getVideos(type.value, page, size).then(res => {
@@ -55,21 +57,32 @@ const search = () => {
 }
 
 const uploaderRef = ref<UploaderInstance>()
-const show = ref(false);
+const showImgActions = ref(false);
 const actions = [
   { name: '本地图片' },
   // TODO: 后续再支持网络图片
   { name: '网络图片', subname: '待开发', disabled: true },
-  // TODO: 后续再支持剪切板图片
-  { name: '剪切板图片', subname: '待开发', disabled: true },
+  { name: '剪切板图片' },
 ];
-function showSelectImg() {
-  show.value = true
+const clickedVideo = ref<Video>()
+function showSelectImg(v: Video) {
+  clickedVideo.value = v
+  showImgActions.value = true
 }
-function onSelect() {
-  uploaderRef.value?.chooseFile();
+async function onSelect(item: ActionSheetAction) {
+  let url
+  switch (item.name) {
+    case '本地图片':
+      uploaderRef.value?.chooseFile();
+      break
+    case '剪切板图片':
+      url = await readImgFromClipboard(clickedVideo.value!.title)
+      clickedVideo.value!.cover = url
+      break
+  }
+  showImgActions.value = false
 }
-function afterRead(file: any) {
+async function afterRead(file: UploaderFileListItem | UploaderFileListItem[]) {
   console.log(file)
 }
 
@@ -80,7 +93,6 @@ onMounted(() => {
     scroll = new BScroll('.videos', {
       scrollY: true,
       click: true,
-      pullUpLoad: true
     })
 
     const intersectionObserver = new IntersectionObserver((entries) => {
@@ -90,7 +102,6 @@ onMounted(() => {
     }, { threshold: 1 });
     // 开始监听
     intersectionObserver.observe(loadMore.value)
-    scroll.on('pullingUp', () => { loadVideo() })
   }, 300);
 })
 </script>
@@ -117,7 +128,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <van-action-sheet v-model:show="show" :actions="actions" cancel-text="取消" description="选择图片来源" close-on-click-action
+    <van-action-sheet v-model:show="showImgActions" :actions="actions" cancel-text="取消" description="选择图片来源"
       @select="onSelect" />
     <van-uploader ref="uploaderRef" v-show="false" :after-read="afterRead" />
     <van-action-sheet v-model:show="searchShow" :actions="searchedActions" cancel-text="取消" close-on-click-action />

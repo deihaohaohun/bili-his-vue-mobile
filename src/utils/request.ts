@@ -3,11 +3,16 @@ import router from '@/router'
 import axios from 'axios'
 import { showToast } from 'vant'
 
+const baseURL = ['production', 'prd'].includes(import.meta.env.MODE)
+  ? 'https://d3-site-server.onrender.com'
+  : 'http://192.168.18.16:3000'
 // 1. 新axios实例，基础配置
 const req = axios.create({
-  baseURL: 'http://192.168.18.16:3000',
+  baseURL,
   timeout: 10000
 })
+
+console.log(baseURL)
 
 // 2. 请求拦截器，携带token
 req.interceptors.request.use(
@@ -49,5 +54,6 @@ req.interceptors.response.use(
 
 const tGet = req.get
 const tPut = req.put
+const tPost = req.post
 
-export { tGet, tPut }
+export { tGet, tPut, tPost }
