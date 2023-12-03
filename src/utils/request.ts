@@ -4,7 +4,7 @@ import axios from 'axios'
 import { showToast } from 'vant'
 
 const baseURL = ['production', 'prd'].includes(import.meta.env.MODE)
-  ? 'bili-his-server.onrender.com'
+  ? 'https://bili-his-server.onrender.com'
   : 'http://192.168.18.16:3000'
 // 1. 新axios实例，基础配置
 const req = axios.create({
