@@ -1,18 +1,17 @@
 name: D3 Front
-
+run-name: 开始执行 Action
 on: [push]
-
 jobs:
-  build:
-
+  Build-And-Publish-D3-Box:
     runs-on: ubuntu-latest
-
     steps:
+    - run: echo "任务开始"
     - uses: actions/checkout@v3
+    - run: echo "设置 Node 环境"
     - name: Install Node.js
       uses: actions/setup-node@v4.0.1
       with:
-        node-version: '16.x'
+        node-version: '18.16.0'
     - name: Install npm dependencies
       run: npm install
     - name: Init Prisma
