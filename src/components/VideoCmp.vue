@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { addVideoHistory } from '@/apis/video';
+import { addVideoHistory, finishVideo } from '@/apis/video';
 import type { Video } from '@/types/video';
 import { showToast, showConfirmDialog } from 'vant';
 
@@ -9,13 +9,20 @@ const emit = defineEmits<{
 }>()
 
 const addHistory = async () => {
+  const finish = video.current === video.total - 1
   await showConfirmDialog({
-    message: '追一集?',
+    message: finish ? '标记看过?' : '追一集?',
   })
-  await addVideoHistory(video.id, {})
-  showToast('更新成功')
-  // eslint-disable-next-line vue/no-mutating-props
-  video.current++
+  if (finish) {
+    await finishVideo(video.id)
+    // eslint-disable-next-line vue/no-mutating-props
+    video.status = 'Done'
+  } else {
+    await addVideoHistory(video.id, {})
+    // eslint-disable-next-line vue/no-mutating-props
+    video.current++
+  }
+  showToast('更新成功~')
 }
 
 function changeCover() {
@@ -42,8 +49,11 @@ function changeCover() {
     </div>
 
     <div class="absolute bottom-1 right-1">
-      <van-button size="mini" @click="addHistory">
+      <van-button v-if="video.status === 'Doing'" size="mini" @click="addHistory">
         <span class="px-1">追一集</span>
+      </van-button>
+      <van-button v-if="video.status === 'Todo'" size="mini">
+        <span class="px-1">开始观看</span>
       </van-button>
     </div>
   </div>

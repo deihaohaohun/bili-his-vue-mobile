@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getVideos } from '@/apis/video';
+import { getVideos, updateVideoCover } from '@/apis/video';
 import PageCmp from '@/components/PageCmp.vue';
 import VideoCmp from '@/components/VideoCmp.vue';
 import { onMounted, ref } from 'vue';
@@ -10,7 +10,7 @@ import { throttle } from 'lodash-es'
 import { showToast, type UploaderInstance } from 'vant';
 import Fuse from 'fuse.js'
 import type { ActionSheetAction, UploaderFileListItem } from 'vant';
-import { readImgFromClipboard } from '@/utils/img';
+import { readImgFromClipboard, readTextFromClipboard } from '@/utils/img';
 
 
 const type = ref<VideoStatus>('Doing')
@@ -18,7 +18,6 @@ function changeType(clickedType: VideoStatus) {
   type.value = clickedType
   videos.value = []
   reset()
-  loadVideo()
 }
 
 const loadMore = ref()
@@ -27,7 +26,6 @@ const { p, reset } = usePage()
 let scroll: BScroll
 
 const loadVideo = throttle(() => {
-  console.log('first')
   if (p.noMore) return
   let { page, size } = p
   getVideos(type.value, page, size).then(res => {
@@ -60,8 +58,7 @@ const uploaderRef = ref<UploaderInstance>()
 const showImgActions = ref(false);
 const actions = [
   { name: '本地图片' },
-  // TODO: 后续再支持网络图片
-  { name: '网络图片', subname: '待开发', disabled: true },
+  { name: '网络图片' },
   { name: '剪切板图片' },
 ];
 const clickedVideo = ref<Video>()
@@ -74,6 +71,11 @@ async function onSelect(item: ActionSheetAction) {
   switch (item.name) {
     case '本地图片':
       uploaderRef.value?.chooseFile();
+      break
+    case '剪切板 url':
+      url = await readTextFromClipboard()
+      await updateVideoCover(clickedVideo.value!.id, { url })
+      clickedVideo.value!.cover = url
       break
     case '剪切板图片':
       url = await readImgFromClipboard(clickedVideo.value!.title)
@@ -95,19 +97,19 @@ onMounted(() => {
       click: true,
     })
 
-    const intersectionObserver = new IntersectionObserver((entries) => {
-      // 如果 intersectionRatio 为 0，则目标在视野外，
+    const loadMoreElement = new IntersectionObserver((entries) => {
+      // 如果 intersectionRatio 为 0，则目标在视野外
       if (entries[0].intersectionRatio <= 0) return;
       loadVideo()
     }, { threshold: 1 });
     // 开始监听
-    intersectionObserver.observe(loadMore.value)
+    loadMoreElement.observe(loadMore.value)
   }, 300);
 })
 </script>
 
 <template>
-  <PageCmp title="首页">
+  <PageCmp title="哔哩历史">
     <div class="videos h-full overflow-hidden mb-14 pt-1 px-1">
       <!-- 滚动主体区域 -->
       <div>

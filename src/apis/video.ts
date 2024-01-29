@@ -10,3 +10,11 @@ export function getVideos(type: 'Doing' | 'Todo' | 'Done', page: number, size: n
 export function addVideoHistory(id: string, data: any) {
   return tPut<Video>(`/video/${id}`, data)
 }
+
+export function updateVideoCover(id: string, data: any) {
+  return tPut<Video>(`/video/cover/${id}`, data)
+}
+
+export function finishVideo(id: string) {
+  return tPut<Video>(`/video/cover/${id}`)
+}

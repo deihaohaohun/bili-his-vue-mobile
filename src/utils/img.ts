@@ -4,6 +4,9 @@ import axios from 'axios'
 
 const req = axios.create()
 
+export const readTextFromClipboard = async (): Promise<string> => {
+  return navigator.clipboard.readText()
+}
 export const readImgFromClipboard = async (title: string): Promise<string> => {
   return navigator.permissions.query({ name: 'clipboard-read' }).then((result) => {
     if (result.state == 'granted' || result.state == 'prompt') {
