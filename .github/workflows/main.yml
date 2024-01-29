@@ -17,11 +17,11 @@ jobs:
       - name: Run build task
         run: npm run build-only
       - name: Deploy to Server
-        uses: easingthemes/ssh-deploy@main
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:
-            SSH_PRIVATE_KEY: ${{ secrets.ALIYUN_SSH_PRIVATE_KEY }}
-            ARGS: '-avzr --delete'
-            SOURCE: "/home/runner/work/bili-his-vue-mobile/dist/"
-            REMOTE_HOST: '60.205.157.192'
-            REMOTE_USER: 'root'
-            TARGET: '/usr/local/nginx/html/bili'
+            username: 'root'
+            server: '60.205.157.192'
+            ssh_private_key: ${{ secrets.ALIYUN_SSH_PRIVATE_KEY }}
+            local_path: './dist/*'
+            remote_path: '/usr/local/nginx/html/bili'
+            sftpArgs: '-o ConnectTimeout=5'
