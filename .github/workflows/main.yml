@@ -24,7 +24,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.ALIYUN_SSH_PRIVATE_KEY }}
           ARGS: "-rlgoDzvc -i --delete"
           SOURCE: "dist/"
-          REMOTE_HOST: 60.205.157.192
-          REMOTE_USER: root
-          TARGET: /usr/local/nginx/html/bili
+          REMOTE_HOST: '60.205.157.192'
+          REMOTE_USER: 'root'
+          TARGET: '/usr/local/nginx/html/bili'
           EXCLUDE: "/dist/, /node_modules/"
