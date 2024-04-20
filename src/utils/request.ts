@@ -5,14 +5,12 @@ import { showToast } from 'vant'
 
 const baseURL = ['production', 'prd'].includes(import.meta.env.MODE)
   ? 'http://60.205.157.192:3000'
-  : 'http://192.168.18.16:3000'
+  : 'http://localhost:3000'
 // 1. 新axios实例，基础配置
 const req = axios.create({
   baseURL,
   timeout: 10000
 })
-
-console.log(baseURL)
 
 // 2. 请求拦截器，携带token
 req.interceptors.request.use(

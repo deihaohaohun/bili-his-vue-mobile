@@ -7,8 +7,8 @@ export function getVideos(type: 'Doing' | 'Todo' | 'Done', page: number, size: n
   return tGet<Video, R<ResPage<Video>>>(`/video/${type}/${page}/${size}`)
 }
 
-export function addVideoHistory(id: string, data: any) {
-  return tPut<Video>(`/video/${id}`, data)
+export function addVideoHistory(id: string) {
+  return tPut<Video>(`/video/${id}`)
 }
 
 export function updateVideoCover(id: string, data: any) {

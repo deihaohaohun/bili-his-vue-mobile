@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { addVideoHistory, finishVideo } from '@/apis/video';
+import { addVideoHistory } from '@/apis/video';
 import type { Video } from '@/types/video';
 import { showToast, showConfirmDialog } from 'vant';
 
@@ -9,19 +9,12 @@ const emit = defineEmits<{
 }>()
 
 const addHistory = async () => {
-  const finish = video.current === video.total - 1
   await showConfirmDialog({
-    message: finish ? '标记看过?' : '追一集?',
+    message: video.current === video.total ? '标记看过?' : '追一集?',
   })
-  if (finish) {
-    await finishVideo(video.id)
-    // eslint-disable-next-line vue/no-mutating-props
-    video.status = 'Done'
-  } else {
-    await addVideoHistory(video.id, {})
-    // eslint-disable-next-line vue/no-mutating-props
-    video.current++
-  }
+  await addVideoHistory(video.id)
+  // eslint-disable-next-line vue/no-mutating-props
+  video.current++
   showToast('更新成功~')
 }
 
