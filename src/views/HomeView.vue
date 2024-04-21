@@ -7,11 +7,9 @@ import BScroll from '@better-scroll/core'
 import { usePage } from '@/utils/page';
 import type { Video, VideoStatus } from '@/types/video';
 import { throttle } from 'lodash-es'
-import { showToast, type UploaderInstance } from 'vant';
-import Fuse from 'fuse.js'
+import { type UploaderInstance } from 'vant';
 import type { ActionSheetAction, UploaderFileListItem } from 'vant';
 import { readImgFromClipboard, readTextFromClipboard } from '@/utils/img';
-
 
 const type = ref<VideoStatus>('Doing')
 function changeType(clickedType: VideoStatus) {
@@ -37,22 +35,6 @@ const loadVideo = throttle(() => {
     })
   })
 }, 2000)
-
-const searchShow = ref(false)
-let searchedActions: any[] = []
-const search = () => {
-  const options = {
-    keys: ['title']
-  }
-  const fuse = new Fuse<Video>(videos.value, options)
-  const result = fuse.search(keyword.value)
-  if (result.length === 0) {
-    showToast('没有搜索到数据, 加载更多数据再试试吧~')
-  } else {
-    searchShow.value = true
-    searchedActions = result.map(r => ({ name: r.item.title }))
-  }
-}
 
 const uploaderRef = ref<UploaderInstance>()
 const showImgActions = ref(false);
@@ -88,8 +70,6 @@ async function afterRead(file: UploaderFileListItem | UploaderFileListItem[]) {
   console.log(file)
 }
 
-const keyword = ref('')
-
 onMounted(() => {
   setTimeout(() => {
     scroll = new BScroll('.videos', {
@@ -106,6 +86,12 @@ onMounted(() => {
     loadMoreElement.observe(loadMore.value)
   }, 300);
 })
+
+// 标记视频为已观看后刷新列表高度
+const refreshList = async () => {
+  await nextTick()
+  scroll.refresh()
+}
 </script>
 
 <template>
@@ -121,9 +107,9 @@ onMounted(() => {
           <van-button @click="changeType('Done')" :type="type === 'Done' ? 'primary' : 'default'"
             size="mini">已看</van-button>
         </div>
-        <van-search v-model="keyword" placeholder="在已查询の数据中搜索" @search="search" />
         <div class="flex flex-col gap-1 bg-slate-100">
-          <VideoCmp v-for="(item, index) in videos" :key="index" :video="item" @changeCover="showSelectImg">
+          <VideoCmp v-for="(item, index) in videos" :key="index" :video="item" @changeCover="showSelectImg"
+            :refresh="refreshList">
           </VideoCmp>
         </div>
         <p ref="loadMore" class="text-center py-2">{{ p.noMore ? '没有更多数据了' : '努力加载中' }}</p>
@@ -133,7 +119,6 @@ onMounted(() => {
     <van-action-sheet v-model:show="showImgActions" :actions="actions" cancel-text="取消" description="选择图片来源"
       @select="onSelect" />
     <van-uploader ref="uploaderRef" v-show="false" :after-read="afterRead" />
-    <van-action-sheet v-model:show="searchShow" :actions="searchedActions" cancel-text="取消" close-on-click-action />
   </PageCmp>
 </template>
 
