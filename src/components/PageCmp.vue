@@ -17,6 +17,5 @@ defineProps(['title'])
 <style lang="scss" scoped>
 .page {
   height: 100svh;
-  padding-bottom: 50px;
 }
 </style>

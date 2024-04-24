@@ -96,7 +96,7 @@ const refreshList = async () => {
 
 <template>
   <PageCmp title="哔哩历史">
-    <div class="videos h-full overflow-hidden mb-14 pt-1 px-1">
+    <div class="videos h-full overflow-hidden pt-1 px-1">
       <!-- 滚动主体区域 -->
       <div>
         <div class="grid grid-cols-3 gap-1 pt-2 px-2">
