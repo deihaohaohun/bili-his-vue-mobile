@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { addVideoHistory } from '@/apis/video';
+import { addVideoHistory, startVideoById } from '@/apis/video';
 import type { Video } from '@/types/video';
 import { showToast, showConfirmDialog } from 'vant';
 
@@ -30,6 +30,13 @@ const addHistory = async () => {
 function changeCover() {
   emit('changeCover', video)
 }
+
+const startVideo = async () => {
+  showToast('开始追~')
+  finished.value = true
+  await startVideoById(video.id)
+  refresh()
+}
 </script>
 
 <template>
@@ -54,7 +61,7 @@ function changeCover() {
       <van-button v-if="video.status === 'Doing'" size="mini" @click="addHistory">
         <span class="px-1">追一集</span>
       </van-button>
-      <van-button v-if="video.status === 'Todo'" size="mini">
+      <van-button v-if="video.status === 'Todo'" size="mini" @click="startVideo">
         <span class="px-1">开始观看</span>
       </van-button>
     </div>
