@@ -1,9 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-
 defineProps(['title'])
 
-const idx = ref(0)
 </script>
 
 <template>
@@ -14,12 +11,6 @@ const idx = ref(0)
         content
       </slot>
     </div>
-    <van-tabbar v-model="idx">
-      <van-tabbar-item icon="home-o">标签</van-tabbar-item>
-      <van-tabbar-item icon="search">标签</van-tabbar-item>
-      <van-tabbar-item icon="friends-o">标签</van-tabbar-item>
-      <van-tabbar-item icon="setting-o">标签</van-tabbar-item>
-    </van-tabbar>
   </div>
 </template>
 
