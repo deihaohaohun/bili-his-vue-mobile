@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { addVideoHistory, startVideoById } from '@/apis/video';
 import type { Video } from '@/types/video';
-import { showToast, showConfirmDialog } from 'vant';
+import { showToast } from 'vant';
 
 const { video, refresh } = defineProps<{ video: Video, refresh: () => void }>()
 const emit = defineEmits<{
@@ -13,9 +13,6 @@ const finished = ref(false)
 const isFinish = computed(() => current.value === video.total)
 
 const addHistory = async () => {
-  await showConfirmDialog({
-    message: isFinish.value ? '标记看过?' : '追一集?',
-  })
   await addVideoHistory(video.id)
   if (!isFinish.value) {
     current.value++
