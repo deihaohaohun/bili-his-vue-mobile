@@ -2,7 +2,6 @@
 import { getVideos, updateVideoCover } from '@/apis/video';
 import PageCmp from '@/components/PageCmp.vue';
 import VideoCmp from '@/components/VideoCmp.vue';
-import { onMounted, ref } from 'vue';
 import BScroll from '@better-scroll/core'
 import { usePage } from '@/utils/page';
 import type { Video, VideoStatus } from '@/types/video';
@@ -93,15 +92,10 @@ const refreshList = async () => {
   scroll.refresh()
 }
 
-// 展示更多菜单
-const showMoreMenus = () => {
-  showSuccessToast('clicked')
-}
 </script>
 
 <template>
   <PageCmp title="哔哩历史">
-    <van-floating-bubble icon="more-o" axis="xy" magnetic="x" @click="showMoreMenus" />
     <div class="videos h-full overflow-hidden pt-1 px-1">
       <!-- 滚动主体区域 -->
       <div>
@@ -125,6 +119,8 @@ const showMoreMenus = () => {
     <van-action-sheet v-model:show="showImgActions" :actions="actions" cancel-text="取消" description="选择图片来源"
       @select="onSelect" />
     <van-uploader ref="uploaderRef" v-show="false" :after-read="afterRead" />
+
+    <ToolNav></ToolNav>
   </PageCmp>
 </template>
 
