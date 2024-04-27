@@ -7,7 +7,7 @@ import BScroll from '@better-scroll/core'
 import { usePage } from '@/utils/page';
 import type { Video, VideoStatus } from '@/types/video';
 import { throttle } from 'lodash-es'
-import { type UploaderInstance } from 'vant';
+import { showSuccessToast, type UploaderInstance } from 'vant';
 import type { ActionSheetAction, UploaderFileListItem } from 'vant';
 import { readImgFromClipboard, readTextFromClipboard } from '@/utils/img';
 
@@ -92,10 +92,16 @@ const refreshList = async () => {
   await nextTick()
   scroll.refresh()
 }
+
+// 展示更多菜单
+const showMoreMenus = () => {
+  showSuccessToast('clicked')
+}
 </script>
 
 <template>
   <PageCmp title="哔哩历史">
+    <van-floating-bubble icon="more-o" axis="xy" magnetic="x" @click="showMoreMenus" />
     <div class="videos h-full overflow-hidden pt-1 px-1">
       <!-- 滚动主体区域 -->
       <div>

@@ -5,7 +5,11 @@ defineProps(['title'])
 
 <template>
   <div class="page flex flex-col">
-    <van-nav-bar :title="title || '标题'" />
+    <van-nav-bar :title="title || '标题'">
+      <template #right>
+        <slot name="right">
+        </slot>
+      </template></van-nav-bar>
     <div class="flex-1 overflow-hidden">
       <slot>
         content

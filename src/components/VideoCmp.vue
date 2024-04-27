@@ -55,16 +55,14 @@ const startVideo = async () => {
       <h5 v-if="video.status === 'Doing'" class="text-sm text-gray-400">看到第 {{ current }} 话</h5>
       <h5 v-if="video.status === 'Todo'" class="text-sm text-gray-400">尚未观看</h5>
       <h5 v-if="video.status === 'Done'" class="text-sm text-gray-400">已看完</h5>
-    </div>
-
-    <div class="absolute bottom-1 right-1">
-      <van-button v-if="video.status === 'Doing'" size="mini" @click="addHistory">
+      <van-button v-if="video.status === 'Doing'" size="small" @click="addHistory">
         <span class="px-1">追一集</span>
       </van-button>
-      <van-button v-if="video.status === 'Todo'" size="mini" @click="startVideo">
+      <van-button v-if="video.status === 'Todo'" size="small" @click="startVideo">
         <span class="px-1">开始观看</span>
       </van-button>
     </div>
+
   </div>
 </template>
 
