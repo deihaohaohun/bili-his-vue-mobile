@@ -1,24 +1,21 @@
 <script setup lang="ts">
+import { nanoid } from 'nanoid';
 
 const width = ref(0)
 const left = ref(0)
-const nihongo = ref<HTMLDivElement>()
-const note = ref<HTMLDivElement>()
+const menus = [{ name: '哔哩历史', id: nanoid() }, { name: '日语', id: nanoid() }, { name: '复习笔记', id: nanoid() }];
+const menusRefs = ref<HTMLDivElement[]>([])
+const position = ref(0)
 
 onMounted(() => {
-  width.value = nihongo.value!.offsetWidth
-  left.value = nihongo.value!.offsetLeft
+  width.value = menusRefs.value[position.value]!.offsetWidth
+  left.value = menusRefs.value[position.value]!.offsetLeft
 })
 
-// TODO: 暂时写死, 后续改为动态修改菜单宽度和边距
-const switchMenu = (bool: boolean) => {
-  if (bool) {
-    width.value = nihongo.value!.offsetWidth
-    left.value = nihongo.value!.offsetLeft;
-  } else {
-    width.value = note.value!.offsetWidth
-    left.value = note.value!.offsetLeft;
-  }
+const switchMenu = (idx: number) => {
+  position.value = idx
+  width.value = menusRefs.value[position.value]!.offsetWidth
+  left.value = menusRefs.value[position.value]!.offsetLeft;
 }
 
 </script>
@@ -26,11 +23,8 @@ const switchMenu = (bool: boolean) => {
 <template>
   <div id="nav" class="inline-flex gap-2 p-3 bg-white">
     <div class="nav-item bg-slate-300" id="slide" :style="{ width: width + 'px', left: left + 'px' }"></div>
-    <div class="nav-item" ref="nihongo" @click="switchMenu(true)">
-      <span class="text">日语</span>
-    </div>
-    <div class="nav-item" ref="note" @click="switchMenu(false)">
-      <span class="text">复习笔记</span>
+    <div v-for="(menu, idx) of menus" :key="menu.id" ref="menusRefs" class="nav-item" @click="switchMenu(idx)">
+      <span class="text">{{ menu.name }}</span>
     </div>
   </div>
 </template>
