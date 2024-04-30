@@ -3,19 +3,21 @@ import { nanoid } from 'nanoid';
 
 const width = ref(0)
 const left = ref(0)
-const menus = [{ name: '哔哩历史', id: nanoid() }, { name: '日语', id: nanoid() }, { name: '复习笔记', id: nanoid() }];
+const menus = [{ name: '哔哩历史', id: nanoid(), routerName: '/' }, { name: '日语', id: nanoid(), routerName: '/nihongo' }, { name: '钢铁匣', id: nanoid(), routerName: 'passbox' }];
 const menusRefs = ref<HTMLDivElement[]>([])
 const position = ref(0)
+const router = useRouter()
 
 onMounted(() => {
   width.value = menusRefs.value[position.value]!.offsetWidth
   left.value = menusRefs.value[position.value]!.offsetLeft
 })
 
-const switchMenu = (idx: number) => {
+const switchMenu = (idx: number, routerName: string) => {
   position.value = idx
   width.value = menusRefs.value[position.value]!.offsetWidth
   left.value = menusRefs.value[position.value]!.offsetLeft;
+  router.push(routerName)
 }
 
 </script>
@@ -23,7 +25,8 @@ const switchMenu = (idx: number) => {
 <template>
   <div id="nav" class="inline-flex gap-2 p-3 bg-white">
     <div class="nav-item bg-slate-300" id="slide" :style="{ width: width + 'px', left: left + 'px' }"></div>
-    <div v-for="(menu, idx) of menus" :key="menu.id" ref="menusRefs" class="nav-item" @click="switchMenu(idx)">
+    <div v-for="(menu, idx) of menus" :key="menu.id" ref="menusRefs" class="nav-item"
+      @click="switchMenu(idx, menu.routerName)">
       <span class="text">{{ menu.name }}</span>
     </div>
   </div>

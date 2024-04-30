@@ -8,6 +8,16 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView
+    },
+    {
+      path: '/nihongo',
+      name: 'nihongo',
+      component: () => import(/* webpackChunkName: "Nihongo" */ '../views/NihongoView.vue')
+    },
+    {
+      path: '/nihongo/detail',
+      name: 'detail',
+      component: () => import(/* webpackChunkName: "BunpoDetail" */ '../views/BunpoDetail.vue')
     }
   ]
 })
