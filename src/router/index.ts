@@ -6,17 +6,17 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'Home',
       component: HomeView
     },
     {
       path: '/nihongo',
-      name: 'nihongo',
+      name: 'Nihongo',
       component: () => import(/* webpackChunkName: "Nihongo" */ '../views/NihongoView.vue')
     },
     {
       path: '/nihongo/detail',
-      name: 'detail',
+      name: 'GrammarDetail',
       component: () => import(/* webpackChunkName: "BunpoDetail" */ '../views/BunpoDetail.vue')
     }
   ]
