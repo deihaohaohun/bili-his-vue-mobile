@@ -119,8 +119,6 @@ const refreshList = async () => {
     <van-action-sheet v-model:show="showImgActions" :actions="actions" cancel-text="取消" description="选择图片来源"
       @select="onSelect" />
     <van-uploader ref="uploaderRef" v-show="false" :after-read="afterRead" />
-
-    <ToolNav></ToolNav>
   </PageCmp>
 </template>
 
