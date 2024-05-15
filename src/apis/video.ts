@@ -3,6 +3,10 @@ import { tGet, tPut } from '../utils/request'
 import type { ResPage } from '@/types/r-page'
 import type { Video } from '@/types/video'
 
+export function updateVideos(data: { id: string; cover: string }) {
+  return tPut<Video, R<Video>>(`/video`, data)
+}
+
 export function getVideos(type: 'Doing' | 'Todo' | 'Done', page: number, size: number) {
   return tGet<Video, R<ResPage<Video>>>(`/video/${type}/${page}/${size}`)
 }

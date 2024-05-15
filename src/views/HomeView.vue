@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getVideos, updateVideoCover } from '@/apis/video';
+import { getVideos, updateVideoCover, updateVideos } from '@/apis/video';
 import PageCmp from '@/components/PageCmp.vue';
 import VideoCmp from '@/components/VideoCmp.vue';
 import BScroll from '@better-scroll/core'
@@ -49,6 +49,7 @@ function showSelectImg(v: Video) {
 }
 async function onSelect(item: ActionSheetAction) {
   let url
+  let id
   switch (item.name) {
     case '本地图片':
       uploaderRef.value?.chooseFile();
@@ -60,6 +61,8 @@ async function onSelect(item: ActionSheetAction) {
       break
     case '剪切板图片':
       url = await readImgFromClipboard(clickedVideo.value!.title)
+      id = clickedVideo.value?.id
+      await updateVideos({ id: id!, cover: url })
       clickedVideo.value!.cover = url
       break
   }
