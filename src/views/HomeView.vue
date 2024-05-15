@@ -6,7 +6,7 @@ import BScroll from '@better-scroll/core'
 import { usePage } from '@/utils/page';
 import type { Video, VideoStatus } from '@/types/video';
 import { throttle } from 'lodash-es'
-import { showSuccessToast, type UploaderInstance } from 'vant';
+import { type UploaderInstance } from 'vant';
 import type { ActionSheetAction, UploaderFileListItem } from 'vant';
 import { readImgFromClipboard, readTextFromClipboard } from '@/utils/img';
 

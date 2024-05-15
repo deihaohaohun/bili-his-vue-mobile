@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { grammars as listOfGrammar } from '../data/grammars.ts'
+import { grammars as listOfGrammar } from '../data/grammars'
 
 const router = useRouter()
 const toDetail = (grammar: Grammar) => {
@@ -21,13 +21,15 @@ const filterGrammar = (idx: number) => {
 }
 
 const computedGrammar = computed(() => {
-  return grammars.value.filter((grammar) => {
+  let data = grammars.value.filter((grammar) => {
     if (active.value === 0) {
       return true
     } else {
       return grammar.level === active.value
     }
   })
+  data = data.sort((a, b) => a.sort - b.sort)
+  return data
 })
 
 const clearCondition = () => {
@@ -47,15 +49,11 @@ const clearCondition = () => {
     </van-sidebar>
     <van-empty class="w-full" v-if="computedGrammar.length === 0" description="描述文字" />
     <div v-else class="grammars flex-1 h-full overflow-scroll">
-      <div
-        class="p-2 border m-1 rounded-md flex justify-between items-center"
-        v-for="grammar of computedGrammar"
-        :key="grammar.id"
-        @click="toDetail(grammar)"
-      >
+      <div class="p-2 border m-1 rounded-md flex justify-between items-center" v-for="grammar of computedGrammar"
+        :key="grammar.id" @click="toDetail(grammar)">
         {{ grammar.title }}
 
-        <van-tag mark type="primary">N{{grammar.level}}</van-tag>
+        <van-tag mark type="primary">N{{ grammar.level }}</van-tag>
       </div>
       <p class="text-center text-sm">没有更多了...</p>
     </div>
