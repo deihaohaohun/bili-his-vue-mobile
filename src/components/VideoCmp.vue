@@ -2,6 +2,7 @@
 import { addVideoHistory, startVideoById } from '@/apis/video';
 import type { Video } from '@/types/video';
 import { showToast } from 'vant';
+import defaultCover from '@/assets/default-cover.png'
 
 const { video, refresh } = defineProps<{ video: Video, refresh: () => void }>()
 const emit = defineEmits<{
@@ -34,16 +35,25 @@ const startVideo = async () => {
   await startVideoById(video.id)
   refresh()
 }
+const getUnit = () => {
+  switch (video.type) {
+    case 'Bangumi':
+      return '话'
+    case 'Documentary':
+      return '集'
+  }
+}
 </script>
 
 <template>
   <div v-if="!finished" class="video flex bg-white p-1 relative">
     <!-- note: flex-shrink-0 解决了图片设置相同宽度但是有些图片却变窄了的问题 -->
     <div class="relative shadow-md rounded-md overflow-hidden flex-shrink-0">
-      <img class="w-[130px] aspect-[3/4] object-fill block" :src="video.cover" @click="changeCover">
+      <img class="w-[130px] aspect-[3/4] object-fill block" :src="video.cover || defaultCover" @click="changeCover">
 
-      <div class="absolute bottom-1 right-1 text-xs px-2 py-1 rounded-md overflow-hidden backdrop-blur-md font-bold">
-        全 {{ video.total }} 话
+      <div v-if="video.type !== 'Movie'"
+        class="absolute bottom-1 right-1 text-xs px-2 py-1 rounded-md overflow-hidden backdrop-blur-md font-bold">
+        全 {{ video.total }} {{ getUnit() }}
       </div>
     </div>
 

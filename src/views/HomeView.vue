@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { getVideos, updateVideoCover, updateVideos } from '@/apis/video';
+import { getVideos, updateVideoCover, updateVideos, createVideo } from '@/apis/video';
 import PageCmp from '@/components/PageCmp.vue';
 import VideoCmp from '@/components/VideoCmp.vue';
 import BScroll from '@better-scroll/core'
 import { usePage } from '@/utils/page';
 import type { Video, VideoStatus } from '@/types/video';
 import { throttle } from 'lodash-es'
-import { type UploaderInstance } from 'vant';
+import { showToast, type UploaderInstance } from 'vant';
 import type { ActionSheetAction, UploaderFileListItem } from 'vant';
 import { readImgFromClipboard, readTextFromClipboard } from '@/utils/img';
 
@@ -94,15 +94,72 @@ const refreshList = async () => {
   await nextTick()
   scroll.refresh()
 }
-
+const newVideoVisible = ref(false)
+const showNewVideoModal = () => {
+  resetVideoForm();
+  newVideoVisible.value = true;
+}
+const videoForm = reactive({
+  title: '',
+  type: 'Bangumi',
+  total: 1,
+  status: 'Todo'
+})
+const submitVideoForm = async (values: any) => {
+  await createVideo(values);
+  showToast('新建视频成功,请刷新页面获取最新数据~');
+  newVideoVisible.value = false
+};
+const resetVideoForm = () => {
+  videoForm.title = ''
+  videoForm.type = 'Bangumi'
+  videoForm.total = 1
+}
 </script>
 
 <template>
   <PageCmp title="哔哩历史">
+    <template #right>
+      <van-icon name="plus" size="18" @click="showNewVideoModal" />
+    </template>
+    <van-popup v-model:show="newVideoVisible" position="bottom" class="pb-8">
+      <van-form @submit="submitVideoForm">
+        <van-cell-group inset>
+          <van-field v-model="videoForm.title" name="title" label="视频名称" placeholder="视频名称"
+            :rules="[{ required: true, message: '请填写视频名称' }]" />
+          <van-field name="status" label="视频状态">
+            <template #input>
+              <van-radio-group v-model="videoForm.status" class="flex flex-col gap-1 pt-1">
+                <van-radio name="Todo">准备看</van-radio>
+                <van-radio name="Done">已看过</van-radio>
+              </van-radio-group>
+            </template>
+          </van-field>
+          <van-field name="type" label="视频类型">
+            <template #input>
+              <van-radio-group v-model="videoForm.type" class="flex flex-col gap-1 pt-1">
+                <van-radio name="Bangumi">番剧</van-radio>
+                <van-radio name="Movie">电影</van-radio>
+                <van-radio name="3Documentary">纪录片</van-radio>
+              </van-radio-group>
+            </template>
+          </van-field>
+          <van-field name="total" label="总集数">
+            <template #input>
+              <van-stepper v-model="videoForm.total" />
+            </template>
+          </van-field>
+          <van-button block type="primary" native-type="submit">
+            新建视频
+          </van-button>
+        </van-cell-group>
+      </van-form>
+    </van-popup>
+
     <div class="videos h-full overflow-hidden pt-1 px-1">
       <!-- 滚动主体区域 -->
       <div>
-        <div class="grid grid-cols-3 gap-1 pt-2 px-2">
+        <div class="grid grid-cols-3 gap-1 p-1">
           <van-button @click="changeType('Doing')" :type="type === 'Doing' ? 'primary' : 'default'"
             size="mini">在看</van-button>
           <van-button @click="changeType('Todo')" :type="type === 'Todo' ? 'primary' : 'default'"
@@ -110,7 +167,7 @@ const refreshList = async () => {
           <van-button @click="changeType('Done')" :type="type === 'Done' ? 'primary' : 'default'"
             size="mini">已看</van-button>
         </div>
-        <div class="flex flex-col gap-1 bg-slate-100">
+        <div class="flex flex-col gap-1 bg-slate-100 py-1">
           <VideoCmp v-for="(item, index) in videos" :key="index" :video="item" @changeCover="showSelectImg"
             :refresh="refreshList">
           </VideoCmp>
